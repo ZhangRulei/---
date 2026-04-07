@@ -3,7 +3,7 @@ import './MainContent.css'
 import logoImg from '../assets/logo.png'
 import {
   Pencil, RotateCcw, Trash2, Copy, Download, Star,
-  Play, Pause, ZoomIn, Image as ImageIcon, X, ArrowUp
+  Play, Pause, ZoomIn, Image as ImageIcon, X, Music
 } from 'lucide-react'
 
 function TextMessage({ img, onDelete, onReEdit }) {
@@ -188,7 +188,7 @@ function VoiceMessage({ img, onDelete, onReEdit }) {
                   <span/><span/><span/><span/><span/>
                 </div>
               ) : (
-                <ArrowUp size={16} strokeWidth={1.8}/>
+                <Music size={16} strokeWidth={1.8}/>
               )}
             </div>
             <div className="audio-card-info">
