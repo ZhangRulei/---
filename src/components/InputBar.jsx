@@ -174,6 +174,8 @@ export default function InputBar({ onGenerate, reEditData, onReEditDone }) {
   const [showQuality, setShowQuality] = useState(false)
   const [showModel, setShowModel] = useState(false)
   const [showGenType, setShowGenType] = useState(false)
+  const [showVoicePanel, setShowVoicePanel] = useState(false)
+  const [selectedVoice, setSelectedVoice] = useState({ id: 1, name: '猫七七阿姨' })
 
   const wrapRef = useRef(null)
   const inputRef = useRef(null)
@@ -197,6 +199,7 @@ export default function InputBar({ onGenerate, reEditData, onReEditDone }) {
         setShowRatio(false)
         setShowModel(false)
         setShowGenType(false)
+        setShowVoicePanel(false)
       }
     }
     document.addEventListener('mousedown', onDocMouseDown)
@@ -270,9 +273,30 @@ export default function InputBar({ onGenerate, reEditData, onReEditDone }) {
             </div>
           )}
           {isVoiceMode && (
-            <div className="voice-preview-card">
-              <div className="voice-cover">声音小样</div>
-              <button type="button" className="voice-play">▶</button>
+            <div className="gen-type-wrap">
+              <div className="voice-preview-card" onClick={() => setShowVoicePanel(v => !v)}>
+                <div className="voice-preview-cover">
+                  <svg viewBox="0 0 36 24" fill="none" width="36" height="24">
+                    <rect x="0" y="9" width="3" height="6" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+                    <rect x="5" y="5" width="3" height="14" rx="1.5" fill="rgba(255,255,255,0.8)"/>
+                    <rect x="10" y="2" width="3" height="20" rx="1.5" fill="rgba(255,255,255,0.95)"/>
+                    <rect x="15" y="6" width="3" height="12" rx="1.5" fill="rgba(255,255,255,0.8)"/>
+                    <rect x="20" y="9" width="3" height="6" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+                    <rect x="25" y="4" width="3" height="16" rx="1.5" fill="rgba(255,255,255,0.75)"/>
+                    <rect x="30" y="8" width="3" height="8" rx="1.5" fill="rgba(255,255,255,0.55)"/>
+                  </svg>
+                </div>
+                <span className="voice-preview-name">{selectedVoice.name}</span>
+                <button type="button" className="voice-play">▶</button>
+              </div>
+              {showVoicePanel && (
+                <div className="gentype-float-panel voice-float-panel">
+                  <VoicePanel
+                    value={selectedVoice}
+                    onChange={(v) => { setSelectedVoice(v); setShowVoicePanel(false) }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -440,27 +464,6 @@ export default function InputBar({ onGenerate, reEditData, onReEditDone }) {
                   <span>{duration}</span>
                 </button>
               </>
-            )}
-
-            {isVoiceMode && (
-              <div className="gen-type-wrap">
-                <button className={`flat-btn is-selected ${showModel ? 'open' : ''}`} onClick={() => { setShowGenType(false); setShowRatio(false); setShowModel(v => !v) }}>
-                  <IcoVoice/>
-                  <span>{voiceModel}</span>
-                </button>
-                {showModel && (
-                  <div className="gentype-float-panel">
-                    <p className="panel-label">选择声音</p>
-                    {VOICE_MODELS.map(m => (
-                      <button key={m} className={`model-item ${voiceModel === m ? 'active' : ''}`} onClick={() => { setVoiceModel(m); setShowModel(false) }}>
-                        <IcoVoice/>
-                        <span>{m}</span>
-                        {voiceModel === m && <span className="check-ml"><IcoCheck/></span>}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
             )}
 
             {isDigitalMode && (

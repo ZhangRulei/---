@@ -217,8 +217,16 @@
 }
 
 body.dark .image-card {
-  background: linear-gradient(150deg, rgba(25, 28, 35, 0.88), rgba(18, 21, 28, 0.72));
+  background: linear-gradient(150deg, #1a2535 0%, #1e2d42 40%, #243347 70%, #1c2a3e 100%);
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark .image-card.generating {
+  background: linear-gradient(150deg, #141e2e 0%, #1a2840 40%, #1e2e45 70%, #172338 100%);
+}
+
+body.dark .image-card.generating::after {
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.07) 50%, transparent 70%);
 }
 
 .image-card-progress {
@@ -287,7 +295,153 @@ body.dark .image-card {
 }
 
 
-/* 文案内容区 */
+.text-content-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* 音频卡片 */
+.audio-cards-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.audio-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  width: 280px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.audio-card:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.audio-card-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  width: 20px;
+}
+
+.audio-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.audio-card-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audio-card-duration {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.audio-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 44px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.audio-card:hover .audio-card-actions {
+  opacity: 1;
+}
+
+.audio-card-action-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: none;
+  background: var(--bg-active);
+  color: var(--icon-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.audio-card-action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--icon-strong);
+}
+
+.audio-card-play {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--icon-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.audio-card-play:hover {
+  background: var(--bg-hover);
+  color: var(--icon-strong);
+}
+
+/* 播放波形动效 */
+.audio-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 16px;
+}
+
+.audio-wave span {
+  display: block;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--text-muted);
+  animation: waveBounce 0.8s ease-in-out infinite;
+}
+
+.audio-wave span:nth-child(1) { height: 4px;  animation-delay: 0s; }
+.audio-wave span:nth-child(2) { height: 10px; animation-delay: 0.1s; }
+.audio-wave span:nth-child(3) { height: 16px; animation-delay: 0.2s; }
+.audio-wave span:nth-child(4) { height: 10px; animation-delay: 0.3s; }
+.audio-wave span:nth-child(5) { height: 4px;  animation-delay: 0.4s; }
+
+@keyframes waveBounce {
+  0%, 100% { transform: scaleY(1); }
+  50%       { transform: scaleY(0.4); }
+}
+
+
 .text-content {
   padding: 16px 4px 4px;
   line-height: 1.8;

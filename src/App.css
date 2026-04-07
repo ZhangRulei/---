@@ -20,6 +20,10 @@
   z-index: 1;
 }
 
+.main-area > header {
+  z-index: 10;
+}
+
 @media (max-width: 900px) {
   .app-layout {
     flex-direction: column-reverse;

@@ -5,13 +5,13 @@ const TABS = ['全部', '视频', '图片', '音频']
 const TYPE_MAP = { MP4: '视频', mp4: '视频', jpg: '图片', png: '图片', mp3: '音频', wav: '音频', pdf: '文档' }
 
 const MOCK_FILES = [
-  { id: 1, name: '逆袭颠身 1_1', type: 'MP4', date: '今天更新', duration: '01:03', group: '今天' },
-  { id: 2, name: '逆袭颠身 1_1', type: 'jpg', date: '今天更新', duration: '', group: '今天' },
-  { id: 3, name: '逆袭颠身 1_1', type: 'mp3', date: '今天更新', duration: '01:03', group: '今天' },
-  { id: 4, name: '逆袭颠身 1_1', type: 'pdf', date: '今天更新', duration: '01:03', group: '今天' },
-  { id: 5, name: '产品介绍视频', type: 'MP4', date: '昨天更新', duration: '02:15', group: '昨天' },
-  { id: 6, name: '封面图设计', type: 'jpg', date: '昨天更新', duration: '', group: '昨天' },
-  { id: 7, name: '配音文件', type: 'mp3', date: '昨天更新', duration: '00:45', group: '昨天' },
+  { id: 1, name: '逆袭颠身 1_1', type: 'MP4', date: '今天更新', duration: '01:03', group: '今天', model: 'DINESSR-SD2.0Fast', prompt: '电影感，特写镜头，一只毛茸茸的银渐层英国短毛猫，睁着圆溜溜的、像琥珀一样的大眼睛，好奇地歪着头。它正伸出粉嫩的小爪子，试图触碰从窗户斜射进来的一束阳光，细小的尘埃在光柱中飞舞。环境是午后洒满阳光的木质窗台，光线温暖柔和，营造出宁静温馨的氛围。背景略微虚化，突出猫咪的可爱神态。' },
+  { id: 2, name: '逆袭颠身 1_1', type: 'jpg', date: '今天更新', duration: '', group: '今天', model: 'Stable Diffusion XL', prompt: '高清写实风格，产品封面图，简洁背景，专业摄影' },
+  { id: 3, name: '逆袭颠身 1_1', type: 'mp3', date: '今天更新', duration: '01:03', group: '今天', model: 'TTS-Pro', prompt: '温柔女声，语速适中，情感饱满' },
+  { id: 4, name: '逆袭颠身 1_1', type: 'pdf', date: '今天更新', duration: '01:03', group: '今天', model: '', prompt: '' },
+  { id: 5, name: '产品介绍视频', type: 'MP4', date: '昨天更新', duration: '02:15', group: '昨天', model: 'Wan2.1', prompt: '产品展示视频，专业打光，360度旋转展示，白色背景，高清4K' },
+  { id: 6, name: '封面图设计', type: 'jpg', date: '昨天更新', duration: '', group: '昨天', model: 'FLUX.1', prompt: '电商封面，鲜艳色彩，吸引眼球，产品主图' },
+  { id: 7, name: '配音文件', type: 'mp3', date: '昨天更新', duration: '00:45', group: '昨天', model: 'CosyVoice', prompt: '磁性男声，专业播音腔，节奏稳健' },
 ]
 
 const FOLDER_FILES = {
@@ -136,9 +136,114 @@ function CardMoreMenu({ onRename, onDownload, onMove, onDelete }) {
   )
 }
 
-function AssetCard({ file }) {
+const typeLabel = { MP4: '视频', mp4: '视频', jpg: '图片', png: '图片', mp3: '音频', wav: '音频' }
+
+function DetailModal({ file, onClose }) {
+  const isVideo = file.type === 'MP4' || file.type === 'mp4'
+  const isImage = file.type === 'jpg' || file.type === 'png'
+  const isAudio = file.type === 'mp3' || file.type === 'wav'
+  const label = typeLabel[file.type] || file.type
+
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [onClose])
+
   return (
-    <div className="asset-card">
+    <div className="detail-overlay" onClick={onClose}>
+      <div className="detail-modal" onClick={e => e.stopPropagation()}>
+        <div className="detail-media">
+          <button className="detail-close" onClick={onClose}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            关闭
+          </button>
+          {isVideo && (
+            <video className="detail-video" controls>
+              <source src="" type="video/mp4"/>
+            </video>
+          )}
+          {isImage && (
+            <div className="detail-image-wrap">
+              <FileCover type={file.type}/>
+            </div>
+          )}
+          {isAudio && (
+            <div className="detail-audio-wrap">
+              <AudioCover/>
+              <audio className="detail-audio" controls>
+                <source src="" type="audio/mpeg"/>
+              </audio>
+            </div>
+          )}
+          {!isVideo && !isImage && !isAudio && (
+            <div className="detail-image-wrap"><FileCover type={file.type}/></div>
+          )}
+        </div>
+        <div className="detail-panel">
+          <div className="detail-panel-header">
+            {isVideo && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                <rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-2v10l-5-2"/>
+              </svg>
+            )}
+            {isImage && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+              </svg>
+            )}
+            {isAudio && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+              </svg>
+            )}
+            <span>{label}详情</span>
+          </div>
+          <div className="detail-panel-body">
+            {file.model && (
+              <div className="detail-field">
+                <span className="detail-field-label">模型</span>
+                <span className="detail-field-value">{file.model}</span>
+              </div>
+            )}
+            {file.prompt && (
+              <div className="detail-field">
+                <span className="detail-field-label">提示词</span>
+                <p className="detail-field-text">{file.prompt}</p>
+              </div>
+            )}
+            <div className="detail-field">
+              <span className="detail-field-label">文件名</span>
+              <span className="detail-field-value">{file.name}.{file.type.toLowerCase()}</span>
+            </div>
+            <div className="detail-field">
+              <span className="detail-field-label">更新时间</span>
+              <span className="detail-field-value">{file.date}</span>
+            </div>
+            {file.duration && (
+              <div className="detail-field">
+                <span className="detail-field-label">时长</span>
+                <span className="detail-field-value">{file.duration}</span>
+              </div>
+            )}
+          </div>
+          <div className="detail-panel-footer">
+            <button className="detail-download-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
+                <path d="M12 16V4M8 12l4 4 4-4"/><path d="M4 17v1a2 2 0 002 2h12a2 2 0 002-2v-1"/>
+              </svg>
+              下载{label}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AssetCard({ file, onOpen }) {
+  return (
+    <div className="asset-card" onClick={() => onOpen(file)}>
       <FileCover type={file.type}/>
       <div className="asset-card-row">
         <span className="asset-type-tag">{file.type}</span>
@@ -226,6 +331,7 @@ export default function AssetPanel() {
   const [activeTab, setActiveTab] = useState('全部')
   const [activeFolder, setActiveFolder] = useState('all')
   const [search, setSearch] = useState('')
+  const [detailFile, setDetailFile] = useState(null)
   const [folders, setFolders] = useState([
     { id: 1, name: '产品讲解' },
     { id: 2, name: '阿姨日常' },

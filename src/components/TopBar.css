@@ -124,6 +124,7 @@
 .session-list {
   max-height: 240px;
   overflow-y: auto;
+  overflow-x: visible;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -198,9 +199,6 @@
 }
 
 .context-menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
   width: 126px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
